@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 """
-Muse LSL -> Godot signal processing bridge (with Focused-High detector).
-
 Adds a robust, stateful "focused_high" signal intended to correspond to:
   focused high ≈ elevated (theta + low-beta) with controlled arousal
-               (penalize delta + high-beta dominance; do not require alpha to rise,
-                but penalize alpha collapse and reward alpha rebound/trend).
 
 Core ideas (computed on each sliding window):
   1) Band powers P_band via FFT-PSD integration.
@@ -14,11 +10,6 @@ Core ideas (computed on each sliding window):
   4) Z-scores z_band = (r_band - μ_band) / (σ_band + eps).
   5) Focused-high score in [0,1] via logistic transform of a weighted z-feature.
   6) Focus meter (0..1) rises quickly when focused-high score is high, decays otherwise.
-
-Dependencies:
-  pip install pylsl numpy
-Optional:
-  pip install scipy
 """
 
 from __future__ import annotations
