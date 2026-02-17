@@ -1,0 +1,79 @@
+// Reusing your Muse → damage meter logic in Unity
+// You can keep running GodotLSL.py exactly as it is (streaming JSON with focused_high.score and focused_high.meter over UDP port 12000).
+// In Unity you just:
+// Create a GameObject called BrainWaveManager with a script like:
+
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
+using UnityEngine;
+using UnityEngine.UI; // only if you hook directly to a Slider here
+
+public class BrainWaveManager : MonoBehaviour
+{
+    [Header("UDP")]
+    public int port = 12000;
+
+    [Header("Damage meter")]
+    public float minDamageMultiplier = 0.5f;
+    public float maxDamageMultiplier = 3.0f;
+    [Range(0f, 1f)] public float focusedHighMeter;  // 0..1
+    public float damageMultiplier = 1.0f;
+
+    UdpClient _client;
+    Thread _thread;
+    bool _running;
+
+    void Start()
+    {
+        _client = new UdpClient(port);
+        _running = true;
+        _thread = new Thread(ListenLoop) { IsBackground = true };
+        _thread.Start();
+    }
+
+    void Update()
+    {
+        // Map focusedHighMeter (0..1) → damageMultiplier
+        var span = maxDamageMultiplier - minDamageMultiplier;
+        if (span <= 0.001f)
+            damageMultiplier = minDamageMultiplier;
+        else
+            damageMultiplier = minDamageMultiplier + focusedHighMeter * span;
+    }
+
+    void ListenLoop()
+    {
+        var ep = new IPEndPoint(IPAddress.Any, port);
+        while (_running)
+        {
+            try
+            {
+                var data = _client.Receive(ref ep);
+                var json = Encoding.UTF8.GetString(data);
+                // Expecting: { "focused_high": { "score": ..., "meter": ... }, ... }
+                var wrapper = JsonUtility.FromJson<FocusedWrapper>(json);
+                if (wrapper != null && wrapper.focused_high != null)
+                {
+                    float meter = wrapper.focused_high.meter;
+                    // Marshal back to main thread via a simple field (Unity reads in Update)
+                    focusedHighMeter = Mathf.Clamp01(meter);
+                }
+            }
+            catch { /* ignore for now */ }
+        }
+    }
+
+    void OnDestroy()
+    {
+        _running = false;
+        _client?.Close();
+    }
+
+    [System.Serializable]
+    class FocusedWrapper { public Focused focused_high; }
+
+    [System.Serializable]
+    class Focused { public float score; public float meter; }
+}
