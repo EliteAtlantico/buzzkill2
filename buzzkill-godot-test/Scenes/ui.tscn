@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://bungh17pvcq44"]
 
 [ext_resource type="Script" uid="uid://khey7ul3jnwc" path="res://Scripts/ui.gd" id="1_jxero"]
-[ext_resource type="PackedScene" uid="uid://bxbtygaco3307" path="res://Scenes/Main.tscn" id="2_qdvrb"]
 
 [node name="UI" type="Control" unique_id=1383709544]
 layout_mode = 3
@@ -20,5 +19,3 @@ offset_right = 1162.35
 offset_bottom = 329.0
 max_value = 1.0
 value = 0.5
-
-[node name="Main" parent="." unique_id=1104308522 instance=ExtResource("2_qdvrb")]

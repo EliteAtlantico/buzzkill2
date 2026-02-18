@@ -11,19 +11,30 @@ config_version=5
 [application]
 
 config/name="Buzzkill_Godot_Test"
-run/main_scene="uid://bungh17pvcq44"
+run/main_scene="uid://bxbtygaco3307"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
-[physics]
+[autoload]
 
-3d/physics_engine="Jolt Physics"
+XRToolsUserSettings="*uid://bqgb8i74tm0t"
+XRToolsRumbleManager="*uid://by853dk86g1qw"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/godot-xr-tools/plugin.cfg")
 
 [rendering]
 
 rendering_device/driver.windows="d3d12"
+anti_aliasing/quality/msaa_3d=1
+vrs/mode=2
 
 [xr]
 
 openxr/enabled=true
+openxr/foveation_level=3
+openxr/foveation_dynamic=true
 shaders/enabled=true
+hybrid_app/enabled=true
+hybrid_app/launch_mode=1

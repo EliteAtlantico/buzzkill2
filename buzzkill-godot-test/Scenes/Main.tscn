@@ -1,32 +1,34 @@
 [gd_scene format=3 uid="uid://bxbtygaco3307"]
 
 [ext_resource type="Script" uid="uid://tvfantypmbfi" path="res://Scripts/Main.gd" id="1_idj7w"]
-[ext_resource type="Script" uid="uid://b2dkppulhlkda" path="res://Scripts/PlayerLogic.gd" id="2_kln2b"]
-[ext_resource type="Script" uid="uid://crrl5mtg3tc5d" path="res://Scripts/XRLocomotion.gd" id="2_rgh2o"]
-[ext_resource type="Script" uid="uid://em2k8hdyotki" path="res://Scripts/UDPReceiver.gd" id="3_pbw6q"]
+[ext_resource type="PackedScene" uid="uid://dwg3kd5thu58q" path="res://Scenes/xr_origin.tscn" id="2_idj7w"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_r150o"]
+size = Vector3(5, 0.1, 5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_idj7w"]
+size = Vector3(5, 0.1, 5)
+
+[sub_resource type="Environment" id="Environment_idj7w"]
 
 [node name="Main" type="Node3D" unique_id=1104308522]
 script = ExtResource("1_idj7w")
 
-[node name="XROrigin3D" type="XROrigin3D" parent="." unique_id=988908787]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=242694969]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
 
-[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D" unique_id=1925221976]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.854504, 0)
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1495098882]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
 
-[node name="XRController3D(Left)" type="XRController3D" parent="XROrigin3D" unique_id=1623571601]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3983541, 0, 0)
-tracker = &"left_hand"
-script = ExtResource("2_rgh2o")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1880350271]
+shape = SubResource("BoxShape3D_r150o")
 
-[node name="XRController3D(Right)" type="XRController3D" parent="XROrigin3D" unique_id=2138853043]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.38576305, 0, 0)
-tracker = &"right_hand"
-script = ExtResource("2_rgh2o")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D/CollisionShape3D" unique_id=1376005638]
+mesh = SubResource("BoxMesh_idj7w")
 
-[node name="Player Logic" type="Node" parent="XROrigin3D" unique_id=555428912]
-script = ExtResource("2_kln2b")
+[node name="XROrigin3D" parent="." unique_id=1220411416 instance=ExtResource("2_idj7w")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0046646595, 0, 0.0044350624)
 
-[node name="UDPReceiver" type="Node" parent="." unique_id=453485514]
-script = ExtResource("3_pbw6q")
-
-[node name="Camera3D" type="Camera3D" parent="." unique_id=1455940964]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=366422540]
+environment = SubResource("Environment_idj7w")

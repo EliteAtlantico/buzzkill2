@@ -17,10 +17,16 @@ func _physics_process(delta: float) -> void:
 	if XRServer.get_tracker(tracker) == null:
 		return
 
-	# Action values are defined by the active OpenXR action map.
-	var move: Vector2 = get_vector2(&"move")
+	# Thumbstick is "primary" in the default OpenXR action map (godot set).
+	var move: Vector2 = get_vector2(&"primary")
 	if move.length() < 0.1:
 		return
 
 	var forward: Vector3 = -global_transform.basis.z
-	get_parent().translate(forward * move.y * speed * delta)
+	var right: Vector3 = global_transform.basis.x
+	forward.y = 0.0
+	right.y = 0.0
+	forward = forward.normalized()
+	right = right.normalized()
+	var motion: Vector3 = (forward * move.y + right * move.x) * speed * delta
+	get_parent().translate(motion)
